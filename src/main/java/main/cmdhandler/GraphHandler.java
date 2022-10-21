@@ -27,7 +27,7 @@ public class GraphHandler {
     public static boolean isMinusSqrted = false;
     private static boolean graphVisible = false;
     private static final HashMap<Entity, Integer> taskId = new HashMap<>();
-    private static boolean isNotNumber(String s) {
+    private static boolean isNaN(String s) {
         try {
             Double.parseDouble(s);
             return false;
@@ -48,7 +48,7 @@ public class GraphHandler {
                 if (graphVisible) {
                     p.sendMessage(currentShowing);
                     break;
-                } else if (args.length == 1 || isNotNumber(args[1])) {
+                } else if (args.length == 1 || isNaN(args[1])) {
                     if (graphSize == null) p.sendMessage(noArg);
                     else p.sendMessage(Main.INDEX + "현재 선의 굵기는 §e" + graphSize + "§f입니다.");
                     break;
@@ -62,7 +62,7 @@ public class GraphHandler {
                 if (graphVisible) {
                     p.sendMessage(currentShowing);
                     break;
-                } else if (args.length == 1 || args[2].isEmpty() || args[3].isEmpty() || isNotNumber(args[1]) || isNotNumber(args[2]) || isNotNumber(args[3])) {
+                } else if (args.length < 4 || isNaN(args[1]) || isNaN(args[2]) || isNaN(args[3])) {
                     p.sendMessage(noArg);
                     break;
                 }
@@ -72,7 +72,7 @@ public class GraphHandler {
                 if (graphVisible) {
                     p.sendMessage(currentShowing);
                     break;
-                } else if (args.length == 1 || isNotNumber(args[1])) {
+                } else if (args.length == 1 || isNaN(args[1])) {
                     if (graphRadius == null) p.sendMessage(noArg);
                     else p.sendMessage(Main.INDEX + "현재 그래프의 반경은 §e" + graphRadius + "§f입니다.");
                     break;
@@ -86,7 +86,7 @@ public class GraphHandler {
                 if (graphVisible) {
                     p.sendMessage(currentShowing);
                     break;
-                } else if (args.length == 1 || isNotNumber(args[1])) {
+                } else if (args.length == 1 || isNaN(args[1])) {
                     if (graphAccuracy == null) p.sendMessage(noArg);
                     else p.sendMessage(Main.INDEX + "현재 그래프의 정확도는 §e" + graphExpression + "§f입니다.");
                     break;
