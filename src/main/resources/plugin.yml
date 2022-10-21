@@ -1,0 +1,9 @@
+name: GraphMC
+author: Barity_
+description: 마인크래프트 그래핑 계산기 플러그인
+main: main.Main
+version: 1.0.0
+api-version: 1.18
+commands:
+  graph:
+    description: 그래핑 도구
