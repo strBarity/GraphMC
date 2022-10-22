@@ -35,7 +35,7 @@ public class FunctionCalculator {
                 if (s.equals("abs\\(") || s.equals("\\|")) m.appendReplacement(r[i], String.valueOf(Math.abs(Double.parseDouble(d))));
                 if (s.equals("abs\\(-") || s.equals("\\|-")) m.appendReplacement(r[i], String.valueOf(Math.abs(Double.parseDouble(d)*(-1))));
                 if (s.equals("√\\(")) m.appendReplacement(r[i], String.valueOf(Math.sqrt(Double.parseDouble(d))));
-                if (s.equals("√\\(-")) m.appendReplacement(r[i], String.valueOf(-2147483648));
+                if (s.equals("√\\(-")) m.appendReplacement(r[i], d + "i");
             } m.appendTail(r[i]);
         } return r[i].toString();
     }

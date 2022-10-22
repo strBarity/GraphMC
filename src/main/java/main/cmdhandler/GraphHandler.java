@@ -122,7 +122,7 @@ public class GraphHandler {
                         final double x = graphOrigin.getX()-(graphRadius/2)+(i/graphAccuracy);
                         e = e.replace("x²", Double.toString(x*x)).replace("x^2", Double.toString(x*x)).replace("x", Double.toString(x)).replace("e", Double.toString(Math.E)).replace("π", Double.toString(Math.PI));
                         e = FunctionCalculator.calculateFunction(e);
-                        if (e.contains(Integer.toString(-2147483648))) isMinusSqrted = true;
+                        if (e.contains("i")) isMinusSqrted = true;
                         else {
                             e = e.replace("(", " ( ").replace(")", " ) ").replace("+", " + ").replace("/", " / ").replace("*", " * ").replace("^", " ^ ").replace("  ", " ");
                             Particle.DustTransition d;
