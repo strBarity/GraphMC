@@ -7,3 +7,4 @@ api-version: 1.18
 commands:
   graph:
     description: 그래핑 도구
+    aliases: [graphmc, 그래프]
