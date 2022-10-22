@@ -19,7 +19,7 @@ public class FunctionCalculator {
             if (i <= 0) m = p.matcher(source);
             else m = p.matcher(r[i-1].toString());
             while (m.find()) {
-                if (DoubleParser.isNotDouble(m.group(2))) {
+                if (NumberParser.isNotDouble(m.group(2))) {
                     StringCalculator calculator;
                     calculator = new StringCalculator();
                     d = calculateFunction(m.group(2));

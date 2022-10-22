@@ -1,8 +1,8 @@
 package main.cmdhandler;
 
 import main.Main;
-import main.calculator.DoubleParser;
 import main.calculator.FunctionCalculator;
+import main.calculator.NumberParser;
 import main.calculator.StringCalculator;
 import net.kyori.adventure.bossbar.BossBar;
 import net.kyori.adventure.text.Component;
@@ -31,71 +31,66 @@ public class GraphHandler {
     public static void onCommand(CommandSender commandsender, String[] args) {
         Player p = (Player) commandsender;
         final Component currentShowing = Component.text(Main.INDEX + "§c그래프가 표시중인 도중엔 사용할 수 없습니다. 그래프를 끄려면 §e/graph toggle§c를 사용하세요.").clickEvent(ClickEvent.runCommand("/graph toggle"));
-        final String noArg = Main.INDEX + "/graph origin <x> <y> <z> - 그래프의 원점을 지정합니다.\n" + Main.INDEX + "/graph size <굵기> - 선의 굵기를 지정합니다.\n" + Main.INDEX + "/graph radius <범위> - 그래프의 범위를 지정합니다.\n" + Main.INDEX + "/graph accuracy <정확도> - 그래프의 정확도를 지정합니다.\n" + Main.INDEX + "/graph expression <식> - 그래프의 식을 지정합니다. (y의 대한 식)\n" + Main.INDEX + "/graph toggle - 그래프의 보이는 여부를 키거나 끕니다.";
+        final String notNumber = Main.INDEX + "§c올바른 숫자를 입력해주세요."; final String tooLarge = Main.INDEX + "§c숫자가 너무 큽니다.";
         if (args.length < 1) {
-            p.sendMessage(noArg);
+            p.sendMessage(Main.INDEX + "§cGraphMC §6- §e마인크래프트 그래핑 계산기\n" + Main.INDEX + "&7도움말을 보려면 " + Component.text("§e/graph help").clickEvent(ClickEvent.runCommand("/graph help")) + "§7를 입력하세요.");
             return;
         } switch (args[0]) {
-            case "test" -> p.sendMessage(Main.INDEX + FunctionCalculator.calculateFunction(args[1]));
+            case "help" -> p.sendMessage(Main.INDEX + "/graph origin <x> <y> <z> - 그래프의 원점을 지정합니다.\n" + Main.INDEX + "/graph size <굵기> - 선의 굵기를 지정합니다.\n" + Main.INDEX + "/graph radius <범위> - 그래프의 범위를 지정합니다.\n" + Main.INDEX + "/graph accuracy <정확도> - 그래프의 정확도를 지정합니다.\n" + Main.INDEX + "/graph expression <식> - 그래프의 식을 지정합니다. (y의 대한 식)\n" + Main.INDEX + "/graph toggle - 그래프의 보이는 여부를 키거나 끕니다.");
             case "size" -> {
                 if (graphVisible) {
                     p.sendMessage(currentShowing);
                     break;
-                } else if (args.length == 1 || DoubleParser.isNotDouble(args[1])) {
-                    if (graphSize == null) p.sendMessage(noArg);
-                    else p.sendMessage(Main.INDEX + "현재 선의 굵기는 §e" + graphSize + "§f입니다.");
+                } else if (args.length == 1 || NumberParser.isNotFloat(args[1])) {
+                    if (graphSize == null) p.sendMessage(notNumber);
+                    else if (args.length == 1) p.sendMessage(Main.INDEX + "현재 선의 굵기는 §e" + graphSize + "§f입니다."); 
                     break;
                 } else if (Double.parseDouble(args[1]) > 10) {
-                    p.sendMessage(Main.INDEX + "§c숫자가 너무 큽니다.");
+                    p.sendMessage(tooLarge);
                     break;
-                }
-                graphSize = Float.parseFloat(args[1]);
+                } graphSize = Float.parseFloat(args[1]);
                 p.sendMessage(Main.INDEX + "선의 굵기를 §e" + graphSize + "§f(으)로 설정했습니다.");
             } case "origin" -> {
                 if (graphVisible) {
                     p.sendMessage(currentShowing);
                     break;
-                } else if (args.length < 4 || DoubleParser.isNotDouble(args[1]) || DoubleParser.isNotDouble(args[2]) || DoubleParser.isNotDouble(args[3])) {
-                    p.sendMessage(noArg);
+                } else if (args.length < 4 || NumberParser.isNotDouble(args[1]) || NumberParser.isNotDouble(args[2]) || NumberParser.isNotDouble(args[3])) {
+                    p.sendMessage(notNumber);
                     break;
-                }
-                graphOrigin = new Location(p.getWorld(), Double.parseDouble(args[1]), Double.parseDouble(args[2]), Double.parseDouble(args[3]));
+                } graphOrigin = new Location(p.getWorld(), Double.parseDouble(args[1]), Double.parseDouble(args[2]), Double.parseDouble(args[3]));
                 p.sendMessage(Main.INDEX + "그래프의 원점을 §e(§a" + graphOrigin.getX() + "§7, §a" + graphOrigin.getY() + "§7, §a" + graphOrigin.getZ() + "§e) §f(으)로 설정했습니다.");
             } case "radius" -> {
                 if (graphVisible) {
                     p.sendMessage(currentShowing);
                     break;
-                } else if (args.length == 1 || DoubleParser.isNotDouble(args[1])) {
-                    if (graphRadius == null) p.sendMessage(noArg);
-                    else p.sendMessage(Main.INDEX + "현재 그래프의 반경은 §e" + graphRadius + "§f입니다.");
+                } else if (args.length == 1 || NumberParser.isNotDouble(args[1])) {
+                    if (graphRadius == null) p.sendMessage(notNumber);
+                    else if (args.length == 1) p.sendMessage(Main.INDEX + "현재 그래프의 반경은 §e" + graphRadius + "§f입니다.");
                     break;
                 } else if (Double.parseDouble(args[1]) > 100) {
-                    p.sendMessage(Main.INDEX + "§c숫자가 너무 큽니다.");
+                    p.sendMessage(tooLarge);
                     break;
-                }
-                graphRadius = Double.parseDouble(args[1]);
+                } graphRadius = Double.parseDouble(args[1]);
                 p.sendMessage(Main.INDEX + "그래프의 반경을 §e" + graphRadius + "§f(으)로 설정했습니다.");
             } case "accuracy" -> {
                 if (graphVisible) {
                     p.sendMessage(currentShowing);
                     break;
-                } else if (args.length == 1 || DoubleParser.isNotDouble(args[1])) {
-                    if (graphAccuracy == null) p.sendMessage(noArg);
-                    else p.sendMessage(Main.INDEX + "현재 그래프의 정확도는 §e" + graphExpression + "§f입니다.");
+                } else if (args.length == 1 || NumberParser.isNotDouble(args[1])) {
+                    if (graphAccuracy == null) p.sendMessage(notNumber);
+                    else if (args.length == 1 ) p.sendMessage(Main.INDEX + "현재 그래프의 정확도는 §e" + graphExpression + "§f입니다.");
                     break;
-                }
-                graphAccuracy = Double.parseDouble(args[1]);
+                } graphAccuracy = Double.parseDouble(args[1]);
                 p.sendMessage(Main.INDEX + "그래프의 정확도를 §e" + graphAccuracy + "§f(으)로 설정했습니다.");
             } case "expression" -> {
                 if (graphVisible) {
                     p.sendMessage(currentShowing);
                     break;
                 } else if (args.length == 1) {
-                    if (graphExpression.isEmpty()) p.sendMessage(noArg);
+                    if (graphExpression.isEmpty()) p.sendMessage(Main.INDEX + "올바른 식을 입력해주세요.");
                     else p.sendMessage(Main.INDEX + "현재 그래프의 식은 §by=" + graphExpression + "§f입니다.");
                     break;
-                }
-                String s = args[1].replace("xx", "x^2");
+                } String s = args[1].replace("xx", "x^2");
                 s = s.replace("e", "§d§oe§b");
                 s = s.replace("pi", "§d§oπ§b");
                 s = s.replace("π", "§d§oπ§b");
@@ -151,7 +146,7 @@ public class GraphHandler {
                         }
                     } if (isMinusSqrted) p.sendMessage(Main.INDEX + "음수의 제곱근은 무시되었습니다.");
                 }
-            } default -> p.sendMessage(noArg);
+            } default -> p.sendMessage(Main.INDEX + "§cGraphMC §6- §e마인크래프트 그래핑 계산기\n" + Main.INDEX + "&7도움말을 보려면 " + Component.text("§e/graph help").clickEvent(ClickEvent.runCommand("/graph help")) + "§7를 입력하세요.");
         }
     }
 }

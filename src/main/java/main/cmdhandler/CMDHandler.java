@@ -20,7 +20,7 @@ public class CMDHandler implements TabExecutor {
 
     @Override
     public @Nullable List<String> onTabComplete(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String s, @NotNull String[] strings) {
-        if (s.equals("graph") && strings.length == 1) return Arrays.asList("origin", "radius", "accuracy", "size", "expression", "toggle");
+        if (s.equals("graph") && strings.length == 1) return Arrays.asList("origin", "radius", "accuracy", "size", "expression", "toggle", "help");
         else if (s.equals("graph") && strings.length > 1 ) return List.of();
         return null;
     }
