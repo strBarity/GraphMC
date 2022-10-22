@@ -6,7 +6,6 @@ import org.bukkit.command.TabExecutor;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -21,11 +20,8 @@ public class CMDHandler implements TabExecutor {
 
     @Override
     public @Nullable List<String> onTabComplete(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String s, @NotNull String[] strings) {
-        List<String> graphTab = new ArrayList<>(Arrays.asList("origin", "radius", "accuracy", "size", "expression", "toggle"));
-        if (strings.length == 1 && "graph".equals(s) && commandSender.isOp()) {
-            graphTab.add("test");
-            return graphTab;
-        } else if (strings.length == 1 && "graph".equals(s) && !commandSender.isOp()) return graphTab;
+        if (s.equals("graph") && strings.length == 1) return Arrays.asList("origin", "radius", "accuracy", "size", "expression", "toggle");
+        else if (s.equals("graph") && strings.length > 1 ) return List.of();
         return null;
     }
 }
