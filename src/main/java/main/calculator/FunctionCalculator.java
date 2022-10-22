@@ -13,23 +13,34 @@ public class FunctionCalculator {
         for (int u = 0; u < r.length; u++) r[u] = new StringBuilder();
         int i = -1;
         for (String s : f) {
-            i++; Pattern p; Matcher m;
+            i++; Pattern p; Matcher m; String d;
             if (s.contains("|")) p = Pattern.compile("(" + s + "\\b(.*?)\\b\\|)");
             else p = Pattern.compile("(" + s + "\\b(.*?)\\b\\))");
             if (i <= 0) m = p.matcher(source);
             else m = p.matcher(r[i-1].toString());
             while (m.find()) {
-                if (s.equals("sin\\(")) m.appendReplacement(r[i], String.valueOf(Math.sin(Double.parseDouble(m.group(2)))));
-                if (s.equals("sin\\(-")) m.appendReplacement(r[i], String.valueOf(Math.sin(Double.parseDouble(m.group(2))*(-1))));
-                if (s.equals("cos\\(")) m.appendReplacement(r[i], String.valueOf(Math.cos(Double.parseDouble(m.group(2)))));
-                if (s.equals("cos\\(-")) m.appendReplacement(r[i], String.valueOf(Math.cos(Double.parseDouble(m.group(2))*(-1))));
-                if (s.equals("tan\\(")) m.appendReplacement(r[i], String.valueOf(Math.tan(Double.parseDouble(m.group(2)))));
-                if (s.equals("tan\\(-")) m.appendReplacement(r[i], String.valueOf(Math.tan(Double.parseDouble(m.group(2))*(-1))));
-                if (s.equals("abs\\(")) m.appendReplacement(r[i], String.valueOf(Math.abs(Double.parseDouble(m.group(2)))));
-                if (s.equals("abs\\(-")) m.appendReplacement(r[i], String.valueOf(Math.abs(Double.parseDouble(m.group(2))*(-1))));
-                if (s.equals("\\|")) m.appendReplacement(r[i], String.valueOf(Math.abs(Double.parseDouble(m.group(2)))));
-                if (s.equals("\\|-")) m.appendReplacement(r[i], String.valueOf(Math.abs(Double.parseDouble(m.group(2))*(-1))));
-                if (s.equals("√\\(")) m.appendReplacement(r[i], String.valueOf(Math.sqrt(Double.parseDouble(m.group(2)))));
+                if (DoubleParser.isNotDouble(m.group(2))) {
+                    StringCalculator calculator;
+                    calculator = new StringCalculator();
+                    d = calculateFunction(m.group(2));
+                    d = d.replace("(", " ( ");
+                    d = d.replace(")", " ) ");
+                    d = d.replace("+", " + ");
+                    d = d.replace("/", " / ");
+                    d = d.replace("*", " * ");
+                    d = d.replace("^", " ^ ");
+                    d = d.replace("  ", " ");
+                    d = Double.toString(calculator.makeResult(d));
+                } else d = m.group(2);
+                if (s.equals("sin\\(")) m.appendReplacement(r[i], String.valueOf(Math.sin(Double.parseDouble(d))));
+                if (s.equals("sin\\(-")) m.appendReplacement(r[i], String.valueOf(Math.sin(Double.parseDouble(d)*(-1))));
+                if (s.equals("cos\\(")) m.appendReplacement(r[i], String.valueOf(Math.cos(Double.parseDouble(d))));
+                if (s.equals("cos\\(-")) m.appendReplacement(r[i], String.valueOf(Math.cos(Double.parseDouble(d)*(-1))));
+                if (s.equals("tan\\(")) m.appendReplacement(r[i], String.valueOf(Math.tan(Double.parseDouble(d))));
+                if (s.equals("tan\\(-")) m.appendReplacement(r[i], String.valueOf(Math.tan(Double.parseDouble(d)*(-1))));
+                if (s.equals("abs\\(") || s.equals("\\|")) m.appendReplacement(r[i], String.valueOf(Math.abs(Double.parseDouble(d))));
+                if (s.equals("abs\\(-") || s.equals("\\|-")) m.appendReplacement(r[i], String.valueOf(Math.abs(Double.parseDouble(d)*(-1))));
+                if (s.equals("√\\(")) m.appendReplacement(r[i], String.valueOf(Math.sqrt(Double.parseDouble(d))));
                 if (s.equals("√\\(-")) m.appendReplacement(r[i], String.valueOf(-2147483648));
             } m.appendTail(r[i]);
         } return r[i].toString();

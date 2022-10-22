@@ -1,6 +1,7 @@
 package main.cmdhandler;
 
 import main.Main;
+import main.calculator.DoubleParser;
 import main.calculator.FunctionCalculator;
 import main.calculator.StringCalculator;
 import net.kyori.adventure.bossbar.BossBar;
@@ -27,14 +28,6 @@ public class GraphHandler {
     public static boolean isMinusSqrted = false;
     private static boolean graphVisible = false;
     private static final HashMap<Entity, Integer> taskId = new HashMap<>();
-    private static boolean isNaN(String s) {
-        try {
-            Double.parseDouble(s);
-            return false;
-        } catch (NumberFormatException e) {
-            return true;
-        }
-    }
     public static void onCommand(CommandSender commandsender, String[] args) {
         Player p = (Player) commandsender;
         final Component currentShowing = Component.text(Main.INDEX + "§c그래프가 표시중인 도중엔 사용할 수 없습니다. 그래프를 끄려면 §e/graph toggle§c를 사용하세요.").clickEvent(ClickEvent.runCommand("/graph toggle"));
@@ -48,7 +41,7 @@ public class GraphHandler {
                 if (graphVisible) {
                     p.sendMessage(currentShowing);
                     break;
-                } else if (args.length == 1 || isNaN(args[1])) {
+                } else if (args.length == 1 || DoubleParser.isNotDouble(args[1])) {
                     if (graphSize == null) p.sendMessage(noArg);
                     else p.sendMessage(Main.INDEX + "현재 선의 굵기는 §e" + graphSize + "§f입니다.");
                     break;
@@ -62,7 +55,7 @@ public class GraphHandler {
                 if (graphVisible) {
                     p.sendMessage(currentShowing);
                     break;
-                } else if (args.length < 4 || isNaN(args[1]) || isNaN(args[2]) || isNaN(args[3])) {
+                } else if (args.length < 4 || DoubleParser.isNotDouble(args[1]) || DoubleParser.isNotDouble(args[2]) || DoubleParser.isNotDouble(args[3])) {
                     p.sendMessage(noArg);
                     break;
                 }
@@ -72,7 +65,7 @@ public class GraphHandler {
                 if (graphVisible) {
                     p.sendMessage(currentShowing);
                     break;
-                } else if (args.length == 1 || isNaN(args[1])) {
+                } else if (args.length == 1 || DoubleParser.isNotDouble(args[1])) {
                     if (graphRadius == null) p.sendMessage(noArg);
                     else p.sendMessage(Main.INDEX + "현재 그래프의 반경은 §e" + graphRadius + "§f입니다.");
                     break;
@@ -86,7 +79,7 @@ public class GraphHandler {
                 if (graphVisible) {
                     p.sendMessage(currentShowing);
                     break;
-                } else if (args.length == 1 || isNaN(args[1])) {
+                } else if (args.length == 1 || DoubleParser.isNotDouble(args[1])) {
                     if (graphAccuracy == null) p.sendMessage(noArg);
                     else p.sendMessage(Main.INDEX + "현재 그래프의 정확도는 §e" + graphExpression + "§f입니다.");
                     break;

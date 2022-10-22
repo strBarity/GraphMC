@@ -1,4 +1,5 @@
 main\cmdhandler\GraphHandler.class
+main\calculator\DoubleParser.class
 main\Main.class
 main\calculator\FunctionCalculator.class
 main\cmdhandler\CMDHandler.class
