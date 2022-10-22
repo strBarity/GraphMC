@@ -28,12 +28,13 @@ public class GraphHandler {
     private static BossBar graphBar = BossBar.bossBar(Component.text("§c식 없음"), 1F, BossBar.Color.WHITE, BossBar.Overlay.PROGRESS);
     public static boolean isMinusSqrted = false;
     public static boolean isMinusLogged = false;
+    public static boolean isConstantFunction = false;
     private static boolean graphVisible = false;
     private static final HashMap<Entity, Integer> taskId = new HashMap<>();
     public static void onCommand(CommandSender commandsender, String[] args) {
         Player p = (Player) commandsender;
         final Component currentShowing = Component.text(Main.INDEX + "§c그래프가 표시중인 도중엔 사용할 수 없습니다. 그래프를 끄려면 §e/graph toggle§c를 사용하세요.").clickEvent(ClickEvent.runCommand("/graph toggle"));
-        final String notNumber = Main.INDEX + "§c올바른 숫자를 입력해주세요."; final String tooLarge = Main.INDEX + "§c숫자가 너무 큽니다.";
+        final String notNumber = Main.INDEX + "§c올바른 숫자를 입력해주세요."; final String tooLarge = Main.INDEX + "§c숫자가 너무 큽니다."; final String notExpression = Main.INDEX + "§c그래프의 식이 올바르지 않습니다.";
         if (args.length < 1) {
             p.sendMessage(Main.INDEX + "§cGraphMC §6- §e마인크래프트 그래핑 계산기\n" + Main.INDEX + "§7도움말을 보려면 §e/graph help§7를 입력하세요.");
             return;
@@ -92,14 +93,35 @@ public class GraphHandler {
                     if (graphExpression.isEmpty()) p.sendMessage(Main.INDEX + "올바른 식을 입력해주세요.");
                     else p.sendMessage(Main.INDEX + "현재 그래프의 식은 §by=" + graphExpression + "§f입니다.");
                     break;
-                } graphExpression = ExpressionParser.highlightFunction(args[1].replace("xx", "x^2"));
+                } String s = ExpressionParser.highlightFunction(args[1].replace("xx", "x^2"));
+                try {
+                    for (double i = 0.0; i < graphRadius * graphAccuracy; i++) {
+                        String e = ChatColor.stripColor(s);
+                        final double x = graphOrigin.getX() - (graphRadius / 2) + (i / graphAccuracy);
+                        e = e.replace("exp", "rais").replace("x²", Double.toString(x * x)).replace("x^2", Double.toString(x * x)).replace("x", Double.toString(x)).replace("e", Double.toString(Math.E)).replace("π", Double.toString(Math.PI));
+                        e = FunctionCalculator.calculateFunction(e);
+                        if (!e.contains("i")) {
+                            e = ExpressionParser.splitOperator(e);
+                            StringCalculator calculator;
+                            calculator = new StringCalculator();
+                            double y = calculator.makeResult(e) + 0.5;
+                            if (NumberParser.isNotDouble(Double.toString(y))) {
+                                p.sendMessage(notExpression);
+                                break;
+                            }
+                        }
+                    }
+                } catch (Exception e) {
+                    p.sendMessage(notExpression);
+                    break;
+                } graphExpression = s;
                 p.sendMessage(Main.INDEX + "그래프의 식을 §by=" + graphExpression + "§f(으)로 설정했습니다.");
                 graphBar = BossBar.bossBar(Component.text("§by=" + graphExpression + " §a표시 중"), 1F, BossBar.Color.WHITE, BossBar.Overlay.PROGRESS);
             } case "toggle" -> {
-                if (graphExpression.isEmpty()) {
+                if (graphExpression == null || graphExpression.isEmpty()) {
                     p.sendMessage(Main.INDEX + "§c그래프의 식이 비어 있습니다.");
                 } else if (graphVisible) {
-                    graphVisible = false; isMinusLogged = false; isMinusSqrted = false;
+                    graphVisible = false; isMinusLogged = false; isMinusSqrted = false; isConstantFunction = false;
                     p.hideBossBar(graphBar);
                     p.sendMessage(Main.INDEX + "더 이상 그래프를 표시하지 않습니다.");
                 } else {
@@ -107,8 +129,13 @@ public class GraphHandler {
                     p.sendMessage(Main.INDEX + "§by=" + graphExpression + "§f에 대한 그래프를 표시합니다.");
                     p.showTitle(Title.title(Component.text("§by=" + graphExpression + " §a표시 중"), Component.text(""), Title.Times.times(Duration.ofSeconds(1L), Duration.ofSeconds(3L), Duration.ofSeconds(1L))));
                     for (double i = 0.0; i < graphRadius*graphAccuracy; i++) {
-                        graphVisible = true;
+                        graphVisible = true; Particle.DustTransition d;
                         String e = ChatColor.stripColor(graphExpression);
+                        if (e.contains("x")) d = new Particle.DustTransition(Color.RED, Color.RED, graphSize);
+                        else {
+                            isConstantFunction = true;
+                            d = new Particle.DustTransition(Color.BLUE, Color.BLUE, graphSize);
+                        }
                         final double x = graphOrigin.getX()-(graphRadius/2)+(i/graphAccuracy);
                         e = e.replace("exp", "rais").replace("x²", Double.toString(x*x)).replace("x^2", Double.toString(x*x)).replace("x", Double.toString(x)).replace("e", Double.toString(Math.E)).replace("π", Double.toString(Math.PI));
                         e = FunctionCalculator.calculateFunction(e);
@@ -116,13 +143,6 @@ public class GraphHandler {
                         else if (e.contains("i")) isMinusSqrted = true;
                         else {
                             e = ExpressionParser.splitOperator(e);
-                            Particle.DustTransition d;
-                            if (e.isEmpty()) {
-                                e = Double.toString(x);
-                                d = new Particle.DustTransition(Color.BLUE, Color.BLUE, graphSize);
-                            } else {
-                                d = new Particle.DustTransition(Color.RED, Color.RED, graphSize);
-                            }
                             StringCalculator calculator;
                             calculator = new StringCalculator();
                             double y = calculator.makeResult(e) + 0.5;
@@ -140,8 +160,10 @@ public class GraphHandler {
                             }, 0, 10L);
                             taskId.put(mk, tmpTaskId);
                         }
-                    } if (isMinusSqrted) p.sendMessage(Main.INDEX + "음수의 제곱근은 무시되었습니다.");
-                    if (isMinusLogged) p.sendMessage(Main.INDEX + "음수의 로그는 무시되었습니다.");
+                    } if (isConstantFunction) p.sendMessage(Main.INDEX + "§7상수함수의 그래프를 표시하고 있습니다.");
+                    else if (isMinusSqrted && isMinusLogged) p.sendMessage(Main.INDEX + "음수의 제곱근과 로그는 무시되었습니다.");
+                    else if (isMinusSqrted) p.sendMessage(Main.INDEX + "음수의 제곱근은 무시되었습니다.");
+                    else if (isMinusLogged) p.sendMessage(Main.INDEX + "음수의 로그는 무시되었습니다.");
                 }
             } default -> p.sendMessage(Main.INDEX + "§cGraphMC §6- §e마인크래프트 그래핑 계산기\n" + Main.INDEX + "§7도움말을 보려면 §e/graph help§7를 입력하세요.");
         }
