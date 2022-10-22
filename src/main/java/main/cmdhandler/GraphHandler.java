@@ -98,8 +98,8 @@ public class GraphHandler {
                 try {
                     for (double i = 0.0; i < graphRadius * graphAccuracy; i++) {
                         String e = ChatColor.stripColor(s);
-                        final double x = graphOrigin.getX() - (graphRadius / 2) + (i / graphAccuracy);
-                        e = e.replace("exp", "rais").replace("x²", Double.toString(x * x)).replace("x^2", Double.toString(x * x)).replace("x", Double.toString(x)).replace("e", Double.toString(Math.E)).replace("π", Double.toString(Math.PI));
+                        final double t = graphOrigin.getX() + (i / graphAccuracy) - (graphRadius / 2);
+                        e = e.replace("x²", Double.toString(t * t)).replace("exp", "rais").replace("x^2", Double.toString(t * t)).replace("x", Double.toString(t)).replace("e", Double.toString(Math.E)).replace("π", Double.toString(Math.PI));
                         e = FunctionCalculator.calculateFunction(e);
                         if (!e.contains("i")) {
                             e = ExpressionParser.splitOperator(e);
