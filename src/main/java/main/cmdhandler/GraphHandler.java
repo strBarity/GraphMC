@@ -25,7 +25,7 @@ public class GraphHandler {
     private static Double graphRadius = 100.0;
     private static Double graphAccuracy = 25.0;
     private static Float graphSize = 1F;
-    private static BossBar graphBar = BossBar.bossBar(Component.text("§c식 없음"), 1F, BossBar.Color.WHITE, BossBar.Overlay.PROGRESS);
+    private static BossBar graphBar = BossBar.bossBar(Component.text("§c식 없음"), 0F, BossBar.Color.PINK, BossBar.Overlay.PROGRESS);
     public static boolean isMinusSqrted = false;
     public static boolean isMinusLogged = false;
     public static boolean isConstantFunction = false;
@@ -117,27 +117,29 @@ public class GraphHandler {
                     break;
                 } graphExpression = s;
                 p.sendMessage(Main.INDEX + "그래프의 식을 §by=" + graphExpression + "§f(으)로 설정했습니다.");
-                graphBar = BossBar.bossBar(Component.text("§by=" + graphExpression + " §a표시 중"), 1F, BossBar.Color.WHITE, BossBar.Overlay.PROGRESS);
+                graphBar = BossBar.bossBar(Component.text("§by=" + graphExpression + " §a표시 중"), 1F, BossBar.Color.PINK, BossBar.Overlay.PROGRESS);
             } case "toggle" -> {
                 if (graphExpression == null || graphExpression.isEmpty()) {
                     p.sendMessage(Main.INDEX + "§c그래프의 식이 비어 있습니다.");
                 } else if (graphVisible) {
                     graphVisible = false; isMinusLogged = false; isMinusSqrted = false; isConstantFunction = false;
+                    graphBar.progress(0F);
                     p.hideBossBar(graphBar);
                     p.sendMessage(Main.INDEX + "더 이상 그래프를 표시하지 않습니다.");
                 } else {
+                    graphBar.progress(0F);
                     p.showBossBar(graphBar);
                     p.sendMessage(Main.INDEX + "§by=" + graphExpression + "§f에 대한 그래프를 표시합니다.");
                     p.showTitle(Title.title(Component.text("§by=" + graphExpression + " §a표시 중"), Component.text(""), Title.Times.times(Duration.ofSeconds(1L), Duration.ofSeconds(3L), Duration.ofSeconds(1L))));
                     for (double i = 0.0; i < graphRadius*graphAccuracy; i++) {
+                        graphBar.progress(Float.parseFloat(Double.toString(i / (graphRadius * graphAccuracy))));
                         graphVisible = true; Particle.DustTransition d;
                         String e = ChatColor.stripColor(graphExpression);
                         if (e.contains("x")) d = new Particle.DustTransition(Color.RED, Color.RED, graphSize);
                         else {
                             isConstantFunction = true;
                             d = new Particle.DustTransition(Color.BLUE, Color.BLUE, graphSize);
-                        }
-                        final double x = graphOrigin.getX()-(graphRadius/2)+(i/graphAccuracy);
+                        } final double x = graphOrigin.getX()-(graphRadius/2)+(i/graphAccuracy);
                         e = e.replace("exp", "rais").replace("x²", Double.toString(x*x)).replace("x^2", Double.toString(x*x)).replace("x", Double.toString(x)).replace("e", Double.toString(Math.E)).replace("π", Double.toString(Math.PI));
                         e = FunctionCalculator.calculateFunction(e);
                         if (e.contains("iπ")) isMinusLogged = true;
