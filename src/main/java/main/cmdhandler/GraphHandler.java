@@ -124,13 +124,7 @@ public class GraphHandler {
                         e = FunctionCalculator.calculateFunction(e);
                         if (e.contains(Integer.toString(-2147483648))) isMinusSqrted = true;
                         else {
-                            e = e.replace("(", " ( ");
-                            e = e.replace(")", " ) ");
-                            e = e.replace("+", " + ");
-                            e = e.replace("/", " / ");
-                            e = e.replace("*", " * ");
-                            e = e.replace("^", " ^ ");
-                            e = e.replace("  ", " ");
+                            e = e.replace("(", " ( ").replace(")", " ) ").replace("+", " + ").replace("/", " / ").replace("*", " * ").replace("^", " ^ ").replace("  ", " ");
                             Particle.DustTransition d;
                             if (e.isEmpty()) {
                                 e = Double.toString(x);

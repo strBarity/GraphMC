@@ -23,13 +23,7 @@ public class FunctionCalculator {
                     StringCalculator calculator;
                     calculator = new StringCalculator();
                     d = calculateFunction(m.group(2));
-                    d = d.replace("(", " ( ");
-                    d = d.replace(")", " ) ");
-                    d = d.replace("+", " + ");
-                    d = d.replace("/", " / ");
-                    d = d.replace("*", " * ");
-                    d = d.replace("^", " ^ ");
-                    d = d.replace("  ", " ");
+                    d = d.replace("(", " ( ").replace(")", " ) ").replace("+", " + ").replace("/", " / ").replace("*", " * ").replace("^", " ^ ").replace("  ", " ");
                     d = Double.toString(calculator.makeResult(d));
                 } else d = m.group(2);
                 if (s.equals("sin\\(")) m.appendReplacement(r[i], String.valueOf(Math.sin(Double.parseDouble(d))));
