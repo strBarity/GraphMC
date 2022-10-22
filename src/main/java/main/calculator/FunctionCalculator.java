@@ -8,7 +8,7 @@ import java.util.regex.Pattern;
 
 public class FunctionCalculator {
     public static String calculateFunction(String source) {
-        List<String> f = new ArrayList<>(Arrays.asList("sin\\(", "sin\\(-", "cos\\(", "cos\\(-", "tan\\(", "tan\\(-", "abs\\(", "abs\\(-", "\\|", "\\|-", "√\\(", "√\\(-"));
+        List<String> f = new ArrayList<>(Arrays.asList("sinh\\(", "sinh\\(-", "cosh\\(", "cosh\\(-", "tanh\\(", "tanh\\(-", "atan\\(", "atan\\(-", "sin\\(", "sin\\(-", "cos\\(", "cos\\(-", "tan\\(", "tan\\(-", "rais\\(", "rais\\(-", "log\\(", "log\\(-", "abs\\(", "abs\\(-", "\\|", "\\|-", "√\\(", "√\\(-"));
         StringBuilder[] r = new StringBuilder[f.size()];
         for (int u = 0; u < r.length; u++) r[u] = new StringBuilder();
         int i = -1;
@@ -26,16 +26,31 @@ public class FunctionCalculator {
                     d = d.replace("(", " ( ").replace(")", " ) ").replace("+", " + ").replace("/", " / ").replace("*", " * ").replace("^", " ^ ").replace("  ", " ");
                     d = Double.toString(calculator.makeResult(d));
                 } else d = m.group(2);
-                if (s.equals("sin\\(")) m.appendReplacement(r[i], String.valueOf(Math.sin(Double.parseDouble(d))));
-                if (s.equals("sin\\(-")) m.appendReplacement(r[i], String.valueOf(Math.sin(Double.parseDouble(d)*(-1))));
-                if (s.equals("cos\\(")) m.appendReplacement(r[i], String.valueOf(Math.cos(Double.parseDouble(d))));
-                if (s.equals("cos\\(-")) m.appendReplacement(r[i], String.valueOf(Math.cos(Double.parseDouble(d)*(-1))));
-                if (s.equals("tan\\(")) m.appendReplacement(r[i], String.valueOf(Math.tan(Double.parseDouble(d))));
-                if (s.equals("tan\\(-")) m.appendReplacement(r[i], String.valueOf(Math.tan(Double.parseDouble(d)*(-1))));
-                if (s.equals("abs\\(") || s.equals("\\|")) m.appendReplacement(r[i], String.valueOf(Math.abs(Double.parseDouble(d))));
-                if (s.equals("abs\\(-") || s.equals("\\|-")) m.appendReplacement(r[i], String.valueOf(Math.abs(Double.parseDouble(d)*(-1))));
-                if (s.equals("√\\(")) m.appendReplacement(r[i], String.valueOf(Math.sqrt(Double.parseDouble(d))));
-                if (s.equals("√\\(-")) m.appendReplacement(r[i], d + "i");
+                final double l = Double.parseDouble(d); final double w = l * (-1);
+                switch (s) {
+                    case "√\\(-" -> m.appendReplacement(r[i], d + "i");
+                    case "√\\(" -> m.appendReplacement(r[i], String.valueOf(Math.sqrt(l)));
+                    case "log\\(-" -> m.appendReplacement(r[i], d + "iπ");
+                    case "log\\(" -> m.appendReplacement(r[i], String.valueOf(Math.log(l)));
+                    case "sinh\\(" -> m.appendReplacement(r[i], String.valueOf(Math.sinh(l)));
+                    case "sinh\\(-" -> m.appendReplacement(r[i], String.valueOf(Math.sinh(w)));
+                    case "cosh\\(" -> m.appendReplacement(r[i], String.valueOf(Math.cosh(l)));
+                    case "cosh\\(-" -> m.appendReplacement(r[i], String.valueOf(Math.cosh(w)));
+                    case "tanh\\(" -> m.appendReplacement(r[i], String.valueOf(Math.tanh(l)));
+                    case "tanh\\(-" -> m.appendReplacement(r[i], String.valueOf(Math.tanh(w)));
+                    case "atan\\(" -> m.appendReplacement(r[i], String.valueOf(Math.atan(l)));
+                    case "atan\\(-" -> m.appendReplacement(r[i], String.valueOf(Math.atan(w)));
+                    case "sin\\(" -> m.appendReplacement(r[i], String.valueOf(Math.sin(l)));
+                    case "sin\\(-" -> m.appendReplacement(r[i], String.valueOf(Math.sin(w)));
+                    case "cos\\(" -> m.appendReplacement(r[i], String.valueOf(Math.cos(l)));
+                    case "cos\\(-" -> m.appendReplacement(r[i], String.valueOf(Math.cos(w)));
+                    case "tan\\(" -> m.appendReplacement(r[i], String.valueOf(Math.tan(l)));
+                    case "tan\\(-" -> m.appendReplacement(r[i], String.valueOf(Math.tan(w)));
+                    case "rais\\(" -> m.appendReplacement(r[i], String.valueOf(Math.exp(l)));
+                    case "rais\\(-" -> m.appendReplacement(r[i], String.valueOf(Math.exp(w)));
+                    case "abs\\(", "\\|" -> m.appendReplacement(r[i], String.valueOf(Math.abs(l)));
+                    case "abs\\(-", "\\|-" -> m.appendReplacement(r[i], String.valueOf(Math.abs(w)));
+                }
             } m.appendTail(r[i]);
         } return r[i].toString();
     }
