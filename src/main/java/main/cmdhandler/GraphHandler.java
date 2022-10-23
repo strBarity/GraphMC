@@ -25,7 +25,7 @@ public class GraphHandler {
     private static Double graphRadius = 100.0;
     private static Double graphAccuracy = 25.0;
     private static Float graphSize = 1F;
-    private static BossBar graphBar = BossBar.bossBar(Component.text("§c식 없음"), 0F, BossBar.Color.PINK, BossBar.Overlay.PROGRESS);
+    private static final BossBar graphBar = BossBar.bossBar(Component.text("§7로딩 중..."), 0F, BossBar.Color.PINK, BossBar.Overlay.PROGRESS);
     public static boolean isMinusSqrted = false;
     public static boolean isMinusLogged = false;
     public static boolean isConstantFunction = false;
@@ -36,11 +36,11 @@ public class GraphHandler {
         final Component currentShowing = Component.text(Main.INDEX + "§c그래프가 표시중인 도중엔 사용할 수 없습니다. 그래프를 끄려면 §e/graph toggle§c를 사용하세요.").clickEvent(ClickEvent.runCommand("/graph toggle"));
         final String notNumber = Main.INDEX + "§c올바른 숫자를 입력해주세요."; final String tooLarge = Main.INDEX + "§c숫자가 너무 큽니다."; final String notExpression = Main.INDEX + "§c그래프의 식이 올바르지 않습니다.";
         if (args.length < 1) {
-            p.sendMessage(Main.INDEX + "§cGraphMC §6- §e마인크래프트 그래핑 계산기\n" + Main.INDEX + "§7도움말을 보려면 §e/graph help§7를 입력하세요.");
+            p.sendMessage(Main.INDEX + "§6-------------------------------------------\n" + Main.INDEX + "§cGraphMC §6- §e마인크래프트 그래핑 계산기§a by §dBarity_\n" + Main.INDEX + "§7명령어 목록을 보려면 §e/graph help§7를 입력하세요.\n" + Main.INDEX + "§6-------------------------------------------");
             return;
         } switch (args[0]) {
-            case "help" -> p.sendMessage(Main.INDEX + "/graph help - 이 창을 띄웁니다.\n" + Main.INDEX + "/graph functions - 그래프의 식에 사용 가능한 함수 리스트를 봅니다.\n" + Main.INDEX + "/graph origin <x> <y> <z> - 그래프의 원점을 지정합니다.\n" + Main.INDEX + "/graph size <굵기> - 선의 굵기를 지정합니다.\n" + Main.INDEX + "/graph radius <범위> - 그래프의 범위를 지정합니다.\n" + Main.INDEX + "/graph accuracy <정확도> - 그래프의 정확도를 지정합니다.\n" + Main.INDEX + "/graph expression <식> - 그래프의 식을 지정합니다. (y의 대한 식)\n" + Main.INDEX + "/graph toggle - 그래프의 보이는 여부를 키거나 끕니다.");
-            case "functions" -> p.sendMessage(Main.INDEX + "§5§oe§f - 자연로그의 밑 §7(2.7182818284590452354...)\n" + Main.INDEX + "§5§opi§f, §5§oπ§f - 원주율 §7(3.14159265358979323846...)\n" + Main.INDEX + "§6log§b(§dx§b)§f - 로그 함수 (자연로그)\n" + Main.INDEX + "§3exp§b(§dx§b) §f- EXP 함수 §b(§5§oe§b^§dx§b)\n" + Main.INDEX + "§csqrt§b(§dx§b), §croot§b(§dx§b), §c§o√§b(§dx§b)§f - 제곱근 (루트)\n" + Main.INDEX + "§7(음수의 제곱근은 무시되어 값이 반환되지 않음)\n" + Main.INDEX + "§8§masin(x)§f, §8§macos(x)§f, §aatan§b(§dx§b) §f- 아크 삼각함수 (역삼각함수)\n" + Main.INDEX + "§7(asin(x), acos(x)는 NaN 현상으로 사용 불가)\n" + Main.INDEX + "§2sinh§b(§dx§b), §2cosh§b(§dx§b), §2tanh§b(§dx§b) §f- 쌍곡선 함수\n" + Main.INDEX + "§esin§b(§dx§b), §ecos§b(§dx§b), §etan§b(§dx§b) §f- 삼각함수\n");
+            case "help" -> p.sendMessage(Main.INDEX + "§6---------------[ §e명령어 목록 §6]------------------\n" + Main.INDEX + "/graph help - 이 창을 띄웁니다.\n" + Main.INDEX + "/graph functions - 그래프의 식에 사용 가능한 함수 리스트를 봅니다.\n" + Main.INDEX + "/graph origin <x> <y> <z> - 그래프의 원점을 지정합니다.\n" + Main.INDEX + "/graph size <굵기> - 선의 굵기를 지정합니다.\n" + Main.INDEX + "/graph radius <범위> - 그래프의 범위를 지정합니다.\n" + Main.INDEX + "/graph accuracy <정확도> - 그래프의 정확도를 지정합니다.\n" + Main.INDEX + "/graph expression <식> - 그래프의 식을 지정합니다. (y의 대한 식)\n" + Main.INDEX + "/graph toggle - 그래프의 보이는 여부를 키거나 끕니다.\n" + Main.INDEX + "§6-------------------------------------------");
+            case "functions" -> p.sendMessage(Main.INDEX + "§6----------------[ §e함수 목록 §6]------------------\n" + Main.INDEX + "§5§oe§f - 자연로그의 밑 §7(2.7182818284590452354...)\n" + Main.INDEX + "§5§opi§f, §5§oπ§f - 원주율 §7(3.14159265358979323846...)\n" + Main.INDEX + "§8§masin(x)§f, §8§macos(x)§f, §aatan§b(§dx§b) §f- 아크 삼각함수 (역삼각함수)\n" + Main.INDEX + "§7(asin(x), acos(x)는 NaN 현상으로 사용 불가)\n" + Main.INDEX + "§2sinh§b(§dx§b), §2cosh§b(§dx§b), §2tanh§b(§dx§b) §f- 쌍곡선 함수\n" + Main.INDEX + "§esin§b(§dx§b), §ecos§b(§dx§b), §etan§b(§dx§b) §f- 삼각함수\n" + Main.INDEX + "§3exp§b(§dx§b) §f- EXP 함수 §b(§5§oe§b^§dx§b)\n" + Main.INDEX + "§6log§b(§dx§b)§f - 로그 함수 (자연로그)\n" + Main.INDEX + "§csqrt§b(§dx§b), §croot§b(§dx§b), §c§o√§b(§dx§b)§f - 제곱근 (루트)\n" + Main.INDEX + "§7(음수의 제곱근과 로그는 무시되어 값이 반환되지 않음)\n" + Main.INDEX + "§6-------------------------------------------");
             case "size" -> {
                 if (graphVisible) {
                     p.sendMessage(currentShowing);
@@ -82,7 +82,7 @@ public class GraphHandler {
                     break;
                 } else if (args.length == 1 || NumberParser.isNotDouble(args[1])) {
                     if (graphAccuracy == null) p.sendMessage(notNumber);
-                    else if (args.length == 1 ) p.sendMessage(Main.INDEX + "현재 그래프의 정확도는 §e" + graphExpression + "§f입니다.");
+                    else if (args.length == 1 ) p.sendMessage(Main.INDEX + "현재 그래프의 정확도는 §e" + graphAccuracy + "§f입니다.");
                     break;
                 } graphAccuracy = Double.parseDouble(args[1]);
                 p.sendMessage(Main.INDEX + "그래프의 정확도를 §e" + graphAccuracy + "§f(으)로 설정했습니다.");
@@ -117,14 +117,14 @@ public class GraphHandler {
                     break;
                 } graphExpression = s;
                 p.sendMessage(Main.INDEX + "그래프의 식을 §by=" + graphExpression + "§f(으)로 설정했습니다.");
-                graphBar = BossBar.bossBar(Component.text("§by=" + graphExpression + " §a표시 중"), 1F, BossBar.Color.PINK, BossBar.Overlay.PROGRESS);
             } case "toggle" -> {
                 if (graphExpression == null || graphExpression.isEmpty()) {
                     p.sendMessage(Main.INDEX + "§c그래프의 식이 비어 있습니다.");
                 } else if (graphVisible) {
                     graphVisible = false; isMinusLogged = false; isMinusSqrted = false; isConstantFunction = false;
-                    graphBar.progress(0F);
                     p.hideBossBar(graphBar);
+                    graphBar.progress(0F);
+                    graphBar.name(Component.text("§7로딩 중..."));
                     p.sendMessage(Main.INDEX + "더 이상 그래프를 표시하지 않습니다.");
                 } else {
                     graphBar.progress(0F);
@@ -143,8 +143,8 @@ public class GraphHandler {
                         e = e.replace("exp", "rais").replace("x²", Double.toString(x*x)).replace("x^2", Double.toString(x*x)).replace("x", Double.toString(x)).replace("e", Double.toString(Math.E)).replace("π", Double.toString(Math.PI));
                         e = FunctionCalculator.calculateFunction(e);
                         if (e.contains("iπ")) isMinusLogged = true;
-                        else if (e.contains("i")) isMinusSqrted = true;
-                        else {
+                        if (e.replace("iπ", "").contains("i")) isMinusSqrted = true;
+                        if (!e.contains("i")) {
                             e = ExpressionParser.splitOperator(e);
                             StringCalculator calculator;
                             calculator = new StringCalculator();
@@ -163,12 +163,13 @@ public class GraphHandler {
                             }, 0, 10L);
                             taskId.put(mk, tmpTaskId);
                         }
-                    } if (isConstantFunction) p.sendMessage(Main.INDEX + "§7상수함수의 그래프를 표시하고 있습니다.");
+                    } graphBar.name(Component.text("§by=" + graphExpression + " §a표시 중"));
+                    if (isConstantFunction) p.sendMessage(Main.INDEX + "§7상수함수의 그래프를 표시하고 있습니다.");
                     else if (isMinusSqrted && isMinusLogged) p.sendMessage(Main.INDEX + "음수의 제곱근과 로그는 무시되었습니다.");
                     else if (isMinusSqrted) p.sendMessage(Main.INDEX + "음수의 제곱근은 무시되었습니다.");
                     else if (isMinusLogged) p.sendMessage(Main.INDEX + "음수의 로그는 무시되었습니다.");
                 }
-            } default -> p.sendMessage(Main.INDEX + "§cGraphMC §6- §e마인크래프트 그래핑 계산기\n" + Main.INDEX + "§7도움말을 보려면 §e/graph help§7를 입력하세요.");
+            } default -> p.sendMessage(Component.text("Main.INDEX" + "§c알 수 없는 명령어입니다: " + args[0] + "\n" + Main.INDEX + "§6명령어 목록을 보려면 §e/graph help§7를 입력하세요.").clickEvent(ClickEvent.runCommand("/graph help")));
         }
     }
 }
