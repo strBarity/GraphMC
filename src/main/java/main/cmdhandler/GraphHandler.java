@@ -169,7 +169,7 @@ public class GraphHandler {
                     else if (isMinusSqrted) p.sendMessage(Main.INDEX + "음수의 제곱근은 무시되었습니다.");
                     else if (isMinusLogged) p.sendMessage(Main.INDEX + "음수의 로그는 무시되었습니다.");
                 }
-            } default -> p.sendMessage(Component.text("Main.INDEX" + "§c알 수 없는 명령어입니다: " + args[0] + "\n" + Main.INDEX + "§6명령어 목록을 보려면 §e/graph help§7를 입력하세요.").clickEvent(ClickEvent.runCommand("/graph help")));
+            } default -> p.sendMessage(Component.text(Main.INDEX + "§c알 수 없는 명령어입니다: " + args[0] + "\n" + Main.INDEX + "§6명령어 목록을 보려면 §e/graph help§7를 입력하세요.").clickEvent(ClickEvent.runCommand("/graph help")));
         }
     }
 }
