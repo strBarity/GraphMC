@@ -11,12 +11,14 @@ public class ExpressionParser {
         .replace("  ", " ");
     } public static String highlightFunction(String s) {
         return s.replace("x", "§dx§b")
-        .replace("e", "§5§oe§b")
-        .replace("pi", "§5§oπ§b")
-        .replace("π", "§5§oπ§b")
+        .replace("e", "§5e§b")
+        .replace("pi", "§5π§b")
+        .replace("π", "§5π§b")
         .replace("sinh", "§2si§2nh§b")
         .replace("cosh", "§2co§2sh§b")
         .replace("tanh", "§2ta§2nh§b")
+        .replace("asin", "§aasi§an§b")
+        .replace("acos", "§aaco§as§b")
         .replace("atan", "§aata§an§b")
         .replace("sin", "§esin§b")
         .replace("cos", "§ecos§b")

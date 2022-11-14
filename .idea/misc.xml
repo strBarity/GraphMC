@@ -6,6 +6,7 @@
     </list>
     <pattern value="main.cmdhandler.CMDHandler" />
     <pattern value="main.Main" />
+    <pattern value="main.calculator.StringCalculator" />
   </component>
   <component name="ExternalStorageConfigurationManager" enabled="true" />
   <component name="MavenProjectsManager">

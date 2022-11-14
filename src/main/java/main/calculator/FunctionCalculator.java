@@ -7,8 +7,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class FunctionCalculator {
-    public static String calculateFunction(String source) {
-        List<String> f = new ArrayList<>(Arrays.asList("sinh\\(", "sinh\\(-", "cosh\\(", "cosh\\(-", "tanh\\(", "tanh\\(-", "atan\\(", "atan\\(-", "sin\\(", "sin\\(-", "cos\\(", "cos\\(-", "tan\\(", "tan\\(-", "rais\\(", "rais\\(-", "log\\(", "log\\(-", "abs\\(", "abs\\(-", "\\|", "\\|-", "√\\(", "√\\(-"));
+    public static String calculateFunction(String y) {
+        List<String> f = new ArrayList<>(Arrays.asList("sinh\\(", "sinh\\(-", "cosh\\(", "cosh\\(-", "tanh\\(", "tanh\\(-", "asin\\(", "asin\\(-", "acos\\(", "acos\\(-", "atan\\(", "atan\\(-", "sin\\(", "sin\\(-", "cos\\(", "cos\\(-", "tan\\(", "tan\\(-", "rais\\(", "rais\\(-", "log\\(", "log\\(-", "abs\\(", "abs\\(-", "\\|", "\\|-", "√\\(", "√\\(-"));
         StringBuilder[] r = new StringBuilder[f.size()];
         for (int u = 0; u < r.length; u++) r[u] = new StringBuilder();
         int i = -1;
@@ -16,15 +16,14 @@ public class FunctionCalculator {
             i++; Pattern p; Matcher m; String d;
             if (s.contains("|")) p = Pattern.compile("(" + s + "\\b(.*?)\\b\\|)");
             else p = Pattern.compile("(" + s + "\\b(.*?)\\b\\))");
-            if (i <= 0) m = p.matcher(source);
+            if (i <= 0) m = p.matcher(y);
             else m = p.matcher(r[i-1].toString());
             while (m.find()) {
                 if (NumberParser.isNotDouble(m.group(2))) {
-                    StringCalculator calculator;
-                    calculator = new StringCalculator();
-                    d = calculateFunction(m.group(2));
-                    d = d.replace("(", " ( ").replace(")", " ) ").replace("+", " + ").replace("/", " / ").replace("*", " * ").replace("^", " ^ ").replace("  ", " ");
-                    d = Double.toString(calculator.makeResult(d));
+                    StringCalculator c;
+                    c = new StringCalculator();
+                    d = ExpressionParser.splitOperator(calculateFunction(m.group(2)));
+                    d = Double.toString(c.makeResult(d));
                 } else d = m.group(2);
                 final double l = Double.parseDouble(d); final double w = l * (-1);
                 switch (s) {
@@ -38,7 +37,19 @@ public class FunctionCalculator {
                     case "cosh\\(-" -> m.appendReplacement(r[i], String.valueOf(Math.cosh(w)));
                     case "tanh\\(" -> m.appendReplacement(r[i], String.valueOf(Math.tanh(l)));
                     case "tanh\\(-" -> m.appendReplacement(r[i], String.valueOf(Math.tanh(w)));
-                    case "atan\\(" -> m.appendReplacement(r[i], String.valueOf(Math.atan(l)));
+                    case "asin\\(" -> {
+                        if (l <= 1 && l >= -1) m.appendReplacement(r[i], String.valueOf(Math.asin(l)));
+                        else m.appendReplacement(r[i], "NaN");
+                    } case "asin\\(-" -> {
+                        if (w <= 1 && w >= -1) m.appendReplacement(r[i], String.valueOf(Math.asin(w)));
+                        else m.appendReplacement(r[i], "NaN");
+                    } case "acos\\(" -> {
+                        if (l <= 1 && l >= -1) m.appendReplacement(r[i], String.valueOf(Math.acos(l)));
+                        else m.appendReplacement(r[i], "NaN");
+                    } case "acos\\(-" -> {
+                        if (w <= 1 && w >= -1) m.appendReplacement(r[i], String.valueOf(Math.acos(w)));
+                        else m.appendReplacement(r[i], "NaN");
+                    } case "atan\\(" -> m.appendReplacement(r[i], String.valueOf(Math.atan(l)));
                     case "atan\\(-" -> m.appendReplacement(r[i], String.valueOf(Math.atan(w)));
                     case "sin\\(" -> m.appendReplacement(r[i], String.valueOf(Math.sin(l)));
                     case "sin\\(-" -> m.appendReplacement(r[i], String.valueOf(Math.sin(w)));
